@@ -3,17 +3,17 @@ package com.upt.cti.bloodnetwork.persistence.domain.dto;
 import java.sql.Date;
 
 public class DonationDTO {
-	private long userId;
+	private String userId;
 	private long placeId;
 	private Date date;
 	private Date nextDonation;
 	private long quantity;
 
-	public long getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
