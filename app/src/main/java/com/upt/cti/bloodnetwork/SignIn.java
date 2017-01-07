@@ -21,9 +21,9 @@ public class SignIn extends AppCompatActivity {
                 intent = new Intent(this, SignUp.class);
                 startActivity(intent);
                 break;
-            case R.id.signin:
-//                intent = new Intent(this, SignUp.class);
-//                startActivity(intent);
+            case R.id.btn_login:
+                intent = new Intent(this, Menu.class);
+                startActivity(intent);
                 break;
         }
     }
