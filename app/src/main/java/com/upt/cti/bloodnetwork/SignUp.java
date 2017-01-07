@@ -9,9 +9,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.upt.cti.bloodnetwork.persistence.domain.dto.LatLongDTO;
+import com.upt.cti.bloodnetwork.persistence.domain.dto.UserDTO;
 import com.upt.cti.bloodnetwork.serviceHandlers.ServiceCaller;
-import com.upt.cti.bloodnetwork.serviceHandlers.dtos.LatLongDTO;
-import com.upt.cti.bloodnetwork.serviceHandlers.dtos.UserDTO;
 
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -43,13 +43,17 @@ public class SignUp extends AppCompatActivity {
                 String longi = (((EditText)findViewById(R.id.input_long)).getText().toString());
 
                 LatLongDTO latLongDTO = new LatLongDTO();
-                latLongDTO.setLatitude(lat);
-                latLongDTO.setLongitude(longi);
-
-                userDTO.setLocation(latLongDTO);
+                if(!lat.isEmpty() && !longi.isEmpty()){
+                    latLongDTO.setLatitude(new Long(lat));
+                    latLongDTO.setLongitude(new Long(longi));
+                    userDTO.setLocation(latLongDTO);
+                }
 
                 userDTO.setBloodType(((EditText)findViewById(R.id.input_blood)).getText().toString());
-                userDTO.setWeight(((EditText)findViewById(R.id.input_weight)).getText().toString());
+                String weight = ((EditText)findViewById(R.id.input_weight)).getText().toString();
+                if(!weight.isEmpty()){
+                    userDTO.setWeight(new Integer(weight));
+                }
 
                 serviceCaller.callPostService(serviceCaller.host+"user/create",userDTO);
 

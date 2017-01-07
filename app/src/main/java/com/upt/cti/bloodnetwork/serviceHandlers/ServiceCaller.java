@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 public class ServiceCaller {
 
-    public String host = "IP_SERVER:8080/bloodnetwork/api/";
+    public String host = "localhost:8080/bloodnetwork/api/";
 
     public void callPostService(final String url, final Object entity){
         Thread thread = new Thread(new Runnable() {
