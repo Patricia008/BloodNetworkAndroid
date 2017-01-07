@@ -20,20 +20,28 @@
         android:orientation="vertical" >
 
         <Button
-            android:id="@+id/signin"
+            android:id="@+id/nearest"
             android:layout_width="250dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
             android:onClick="clicked"
-            android:text="Sign in"/>
+            android:text="Nearest Centers"/>
 
         <Button
-            android:id="@+id/skipsignin"
+            android:id="@+id/priority"
             android:layout_width="250dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
             android:onClick="clicked"
-            android:text="Skip Sign in"/>
+            android:text="Critical Need Centers"/>
+
+        <Button
+            android:id="@+id/history"
+            android:layout_width="250dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:onClick="clicked"
+            android:text="History"/>
     </LinearLayout>
 
 </RelativeLayout>

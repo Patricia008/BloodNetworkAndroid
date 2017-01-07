@@ -3,4 +3,8 @@
     <color name="colorPrimary">#b53f51</color>
     <color name="colorPrimaryDark">#462d32</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+    <color name="listItemHead">#de9b9b</color>
+    <color name="historyListItemHead">#88c4a5</color>
 </resources>

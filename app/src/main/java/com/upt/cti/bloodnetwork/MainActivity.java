@@ -18,18 +18,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clicked(View view) {
+        Intent intent;
         switch (view.getId()) {
-            case R.id.signIn:
-                Intent intent = new Intent(this, SignIn.class);
-                //EditText editText = (EditText) findViewById(R.id.edit_message);
-                //String message = editText.getText().toString();
-                //intent.putExtra(EXTRA_MESSAGE, message);
+            case R.id.signin:
+                intent = new Intent(this, SignIn.class);
                 startActivity(intent);
                 break;
-//            case R.id.bUpdate:
-//                databaseReference.child("calendar").child("march").child("expenses").setValue(eIncome.getText());
-//                databaseReference.child("calendar").child("march").child("income").setValue(eExpenses.getText());
-//                break;
+            case R.id.skipsignin:
+                intent = new Intent(this, Menu.class);
+                startActivity(intent);
+                break;
         }
     }
 }

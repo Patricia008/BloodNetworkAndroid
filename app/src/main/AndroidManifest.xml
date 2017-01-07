@@ -15,7 +15,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignIn"></activity>
+        <activity android:name=".SignIn" />
+        <activity android:name=".Nearest" />
+        <activity android:name=".Priority" />
+        <activity android:name=".History" />
+        <activity android:name=".SignUp" />
+        <activity android:name=".Menu"></activity>
     </application>
 
 </manifest>
