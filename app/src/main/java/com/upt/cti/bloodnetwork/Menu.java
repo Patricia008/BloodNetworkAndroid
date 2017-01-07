@@ -17,7 +17,7 @@ public class Menu extends AppCompatActivity {
     private LinearLayout linearLayout1, linearLayout2;
     private Handler handler;
     private Runnable runnable;
-    public String eventDate="2017-01-8";
+    public String eventDate="2017-01-9";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +86,7 @@ public class Menu extends AppCompatActivity {
         Intent intent;
         switch (view.getId()) {
             case R.id.nearest:
-                intent = new Intent(this, MapsActivity.class);
+                intent = new Intent(this, Nearest.class);
                 startActivity(intent);
                 break;
             case R.id.priority:

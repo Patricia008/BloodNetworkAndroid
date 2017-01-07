@@ -70,7 +70,29 @@
             android:layout_alignParentEnd="true"
             android:textSize="20dp"/>
 
-        <EditText android:id="@+id/input_address"
+        <TextView
+            android:id="@+id/lat_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Latitude:"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:textSize="20dp"/>
+
+        <EditText android:id="@+id/input_lat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"/>
+        <TextView
+            android:id="@+id/long_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Longitude:"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:textSize="20dp"/>
+
+        <EditText android:id="@+id/input_long"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"/>
