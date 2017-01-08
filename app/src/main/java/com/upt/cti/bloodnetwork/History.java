@@ -1,6 +1,7 @@
 package com.upt.cti.bloodnetwork;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,10 +10,22 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.upt.cti.bloodnetwork.listadapters.HistoryAdapter;
+import com.upt.cti.bloodnetwork.listadapters.PriorityAdapter;
 import com.upt.cti.bloodnetwork.listitemholders.HistoryItem;
+import com.upt.cti.bloodnetwork.listitemholders.PriorityItem;
+import com.upt.cti.bloodnetwork.persistence.domain.dto.BloodRequirementDTO;
+import com.upt.cti.bloodnetwork.persistence.domain.dto.DonationDTO;
+import com.upt.cti.bloodnetwork.serviceHandlers.ServiceCaller;
+
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -22,25 +35,66 @@ public class History extends AppCompatActivity {
     private LinearLayout linearLayout1, linearLayout2;
     private Handler handler;
     private Runnable runnable;
-    public String eventDate="2017-01-8";
+    private ServiceCaller serviceCaller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-        List<HistoryItem> history = new ArrayList<>();
-        history.add(new HistoryItem("3.5.2016","400ml"));
-        history.add(new HistoryItem("30.7.2016","100ml"));
-        history.add(new HistoryItem("4.9.2016","300ml"));
+        serviceCaller = new ServiceCaller();
+//        List<HistoryItem> history = new ArrayList<>();
+//        history.add(new HistoryItem("3.5.2016","400ml"));
+//        history.add(new HistoryItem("30.7.2016","100ml"));
+//        history.add(new HistoryItem("4.9.2016","300ml"));
+
+        final History that = this;
+        SignIn signin = new SignIn();
+        final String email = signin.user.getEmail();
+
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try  {
+                    String url = serviceCaller.host+"donation/find/"+email;
+                    Looper.prepare();
+                    RestTemplate restTemplate = new RestTemplate();
+                    restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+
+                    ResponseEntity<List<DonationDTO>> rateResponse =
+                            restTemplate.exchange(url,
+                                    HttpMethod.GET, null, new ParameterizedTypeReference<List<DonationDTO>>() {
+                                    });
+                    List<DonationDTO> result = rateResponse.getBody();
+
+                    if(result!=null){
+                        List<HistoryItem> histories = convertDTOToListItemHistory(result);
+                        ListView listHistories = (ListView) findViewById(R.id.listHistory);
+
+                        final HistoryAdapter adapter = new HistoryAdapter(that, R.layout.item_history, histories);
+                        listHistories.setAdapter(adapter);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
 
         initUI();
         countDownStart();
 
-        ListView listHistory = (ListView) findViewById(R.id.listHistory);
-        final HistoryAdapter adapter = new HistoryAdapter(this, R.layout.item_history, history);
-        listHistory.setAdapter(adapter);
 //        ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, history);
 //        listPayments.setAdapter(listAdapter);
+    }
+
+    private List<HistoryItem> convertDTOToListItemHistory(List<DonationDTO> donations){
+        List<HistoryItem> historyItems = new ArrayList<>();
+        for(DonationDTO br : donations){
+            HistoryItem pi = new HistoryItem(br.getDate().toString(), Long.toString(br.getQuantity()));
+            historyItems.add(pi);
+        }
+        return historyItems;
     }
 
     private void initUI() {
