@@ -69,13 +69,6 @@ public class Priority extends AppCompatActivity {
                         List<PriorityItem> centers = convertDTOToListItemPriority(result);
                         ListView listCenters = (ListView) findViewById(R.id.listCenters);
 
-                        centers.sort(new Comparator<PriorityItem>() {
-                            @Override
-                            public int compare(PriorityItem priorityItem, PriorityItem t1) {
-                                return (int) (t1.getAmount()-priorityItem.getAmount());
-                            }
-                        });
-
                         final PriorityAdapter adapter = new PriorityAdapter(that, R.layout.item_priority, centers);
                         listCenters.setAdapter(adapter);
                     }

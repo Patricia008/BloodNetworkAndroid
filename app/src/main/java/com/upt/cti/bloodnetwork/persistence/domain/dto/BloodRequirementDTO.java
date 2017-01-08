@@ -3,7 +3,7 @@ package com.upt.cti.bloodnetwork.persistence.domain.dto;
 public class BloodRequirementDTO {
 
 	private String bloodType;
-	private long placeId;
+	private String placeName;
 	private long quantity;
 	private String priority;
 
@@ -15,12 +15,12 @@ public class BloodRequirementDTO {
 		this.bloodType = bloodType;
 	}
 
-	public long getPlaceId() {
-		return placeId;
+	public String getPlaceName() {
+		return placeName;
 	}
 
-	public void setPlaceId(long placeId) {
-		this.placeId = placeId;
+	public void setPlaceName(String placeName) {
+		this.placeName = placeName;
 	}
 
 	public long getQuantity() {
@@ -38,5 +38,4 @@ public class BloodRequirementDTO {
 	public void setPriority(String priority) {
 		this.priority = priority;
 	}
-
 }
