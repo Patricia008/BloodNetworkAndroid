@@ -19,7 +19,7 @@ public class SignIn extends AppCompatActivity {
 
     private ServiceCaller serviceCaller;
 
-    public static UserDTO user;
+    private static UserDTO user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,5 +60,9 @@ public class SignIn extends AppCompatActivity {
                 thread.start();
                 break;
         }
+    }
+
+    public UserDTO getUser(){
+        return user;
     }
 }

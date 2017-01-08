@@ -49,7 +49,7 @@ public class Priority extends AppCompatActivity {
 //        centers.add(new PriorityItem("Spitalul Municipal",100000L));
 
         SignIn signin = new SignIn();
-        final String bloodType = signin.user.getBloodType();
+        final String bloodType = signin.getUser().getBloodType();
 
         final Priority that = this;
 

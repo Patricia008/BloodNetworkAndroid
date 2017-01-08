@@ -2,11 +2,18 @@ package com.upt.cti.bloodnetwork;
 
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.upt.cti.bloodnetwork.persistence.domain.dto.UserDTO;
+import com.upt.cti.bloodnetwork.serviceHandlers.ServiceCaller;
+
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,15 +24,50 @@ public class Menu extends AppCompatActivity {
     private LinearLayout linearLayout1, linearLayout2;
     private Handler handler;
     private Runnable runnable;
-    public String eventDate="2017-01-9";
+    static public String eventDate="2017-01-9";
+    private ServiceCaller serviceCaller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+        serviceCaller = new ServiceCaller();
+
+        eventDate = getNextDonationDate();
 
         initUI();
         countDownStart();
+    }
+
+    public String getNextDonationDate(){
+        SignIn signIn = new SignIn();
+        final String email = signIn.getUser().getEmail();
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try  {
+                    String url = serviceCaller.host+"donation/next/"+email;
+                    Looper.prepare();
+                    RestTemplate restTemplate = new RestTemplate();
+                    restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+                    String result = restTemplate.getForObject(url, String.class);
+                    if(result != null){
+                        Menu menu = new Menu();
+                        menu.eventDate = result;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+        try{
+        thread.join();}
+        catch(InterruptedException e){
+            e.printStackTrace();
+        }
+        return this.eventDate;
     }
 
     private void initUI() {
