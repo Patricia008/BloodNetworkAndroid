@@ -49,7 +49,7 @@ public class History extends AppCompatActivity {
 
         final History that = this;
         SignIn signin = new SignIn();
-        final String email = signin.user.getEmail();
+        final String email = signin.getUser().getEmail();
 
         Thread thread = new Thread(new Runnable() {
 

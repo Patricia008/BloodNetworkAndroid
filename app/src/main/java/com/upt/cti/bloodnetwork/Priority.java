@@ -1,21 +1,17 @@
 package com.upt.cti.bloodnetwork;
 
-import android.hardware.camera2.params.BlackLevelPattern;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.upt.cti.bloodnetwork.listadapters.HistoryAdapter;
 import com.upt.cti.bloodnetwork.listadapters.PriorityAdapter;
 import com.upt.cti.bloodnetwork.listitemholders.PriorityItem;
 import com.upt.cti.bloodnetwork.persistence.domain.dto.BloodRequirementDTO;
-import com.upt.cti.bloodnetwork.persistence.domain.dto.UserDTO;
 import com.upt.cti.bloodnetwork.serviceHandlers.ServiceCaller;
 
 import org.springframework.core.ParameterizedTypeReference;
