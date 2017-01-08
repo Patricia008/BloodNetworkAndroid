@@ -19,6 +19,8 @@ public class SignIn extends AppCompatActivity {
 
     private ServiceCaller serviceCaller;
 
+    public static UserDTO user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,12 +43,13 @@ public class SignIn extends AppCompatActivity {
                     @Override
                     public void run() {
                         try  {
-                            String url = serviceCaller.host+"/find/"+email;
+                            String url = serviceCaller.host+"user/find/"+email;
                             Looper.prepare();
                             RestTemplate restTemplate = new RestTemplate();
                             restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
                             UserDTO result = restTemplate.getForObject(url, UserDTO.class);
                             if(result != null){
+                                user=result;
                                 startActivity(intent);
                             }
                         } catch (Exception e) {

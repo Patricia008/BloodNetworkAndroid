@@ -1,6 +1,8 @@
 package com.upt.cti.bloodnetwork;
 
+import android.hardware.camera2.params.BlackLevelPattern;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +14,15 @@ import android.widget.TextView;
 import com.upt.cti.bloodnetwork.listadapters.HistoryAdapter;
 import com.upt.cti.bloodnetwork.listadapters.PriorityAdapter;
 import com.upt.cti.bloodnetwork.listitemholders.PriorityItem;
+import com.upt.cti.bloodnetwork.persistence.domain.dto.BloodRequirementDTO;
+import com.upt.cti.bloodnetwork.persistence.domain.dto.UserDTO;
+import com.upt.cti.bloodnetwork.serviceHandlers.ServiceCaller;
+
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,16 +37,46 @@ public class Priority extends AppCompatActivity {
     private LinearLayout linearLayout1, linearLayout2;
     private Handler handler;
     private Runnable runnable;
-    public String eventDate="2017-01-8";
+    private ServiceCaller serviceCaller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_priority);
         List<PriorityItem> centers = new ArrayList<>();
-        centers.add(new PriorityItem("Regina Maria",4000L));
-        centers.add(new PriorityItem("Sf. Stefan",6000L));
-        centers.add(new PriorityItem("Spitalul Municipal",100000L));
+        serviceCaller = new ServiceCaller();
+//        centers.add(new PriorityItem("Regina Maria",4000L));
+//        centers.add(new PriorityItem("Sf. Stefan",6000L));
+//        centers.add(new PriorityItem("Spitalul Municipal",100000L));
+
+        SignIn signin = new SignIn();
+        final String bloodType = signin.user.getBloodType();
+
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try  {
+                    String url = serviceCaller.host+"bloodrequirement/find/"+bloodType;
+                    Looper.prepare();
+                    RestTemplate restTemplate = new RestTemplate();
+                    restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+
+                    ResponseEntity<List<BloodRequirementDTO>> rateResponse =
+                            restTemplate.exchange(url,
+                                    HttpMethod.GET, null, new ParameterizedTypeReference<List<BloodRequirementDTO>>() {
+                                    });
+                    List<BloodRequirementDTO> result = rateResponse.getBody();
+
+                    if(result!=null){
+                        centers = new ArrayList<BloodRequirementDTO>(result);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
 
         initUI();
         countDownStart();
