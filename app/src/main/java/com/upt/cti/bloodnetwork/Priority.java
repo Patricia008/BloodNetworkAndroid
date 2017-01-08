@@ -43,7 +43,6 @@ public class Priority extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_priority);
-        List<PriorityItem> centers = new ArrayList<>();
         serviceCaller = new ServiceCaller();
 //        centers.add(new PriorityItem("Regina Maria",4000L));
 //        centers.add(new PriorityItem("Sf. Stefan",6000L));
@@ -51,6 +50,8 @@ public class Priority extends AppCompatActivity {
 
         SignIn signin = new SignIn();
         final String bloodType = signin.user.getBloodType();
+
+        final Priority that = this;
 
         Thread thread = new Thread(new Runnable() {
 
@@ -69,7 +70,18 @@ public class Priority extends AppCompatActivity {
                     List<BloodRequirementDTO> result = rateResponse.getBody();
 
                     if(result!=null){
-                        centers = new ArrayList<BloodRequirementDTO>(result);
+                        List<PriorityItem> centers = convertDTOToListItemPriority(result);
+                        ListView listCenters = (ListView) findViewById(R.id.listCenters);
+
+                        centers.sort(new Comparator<PriorityItem>() {
+                            @Override
+                            public int compare(PriorityItem priorityItem, PriorityItem t1) {
+                                return (int) (t1.getAmount()-priorityItem.getAmount());
+                            }
+                        });
+
+                        final PriorityAdapter adapter = new PriorityAdapter(that, R.layout.item_priority, centers);
+                        listCenters.setAdapter(adapter);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -80,22 +92,15 @@ public class Priority extends AppCompatActivity {
 
         initUI();
         countDownStart();
+    }
 
-        ListView listCenters = (ListView) findViewById(R.id.listCenters);
-
-        centers.sort(new Comparator<PriorityItem>() {
-            @Override
-            public int compare(PriorityItem priorityItem, PriorityItem t1) {
-                return (int) (t1.getAmount()-priorityItem.getAmount());
-            }
-        });
-
-        final PriorityAdapter adapter = new PriorityAdapter(this, R.layout.item_priority, centers);
-        listCenters.setAdapter(adapter);
-//        centers.add("10.25");
-//        centers.remove(2);
-//// update UI
-//        listAdapter.notifyDataSetChanged();
+    private List<PriorityItem> convertDTOToListItemPriority(List<BloodRequirementDTO> result){
+        List<PriorityItem> priorityItems = new ArrayList<>();
+        for(BloodRequirementDTO br : result){
+            PriorityItem pi = new PriorityItem(br.getPlaceName(), br.getQuantity());
+            priorityItems.add(pi);
+        }
+        return priorityItems;
     }
 
     private void initUI() {
