@@ -3,6 +3,10 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
+    packagingOptions{
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+    }
     defaultConfig {
         applicationId "com.upt.cti.bloodnetwork"
         minSdkVersion 23
@@ -35,5 +39,8 @@ dependencies {
     compile 'com.android.support:design:25.0.0'
     compile 'com.google.android.gms:play-services:9.6.0'
     compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.8.6'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.8.6'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.6'
     testCompile 'junit:junit:4.12'
 }

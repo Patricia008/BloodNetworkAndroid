@@ -19,7 +19,7 @@ public class SignIn extends AppCompatActivity {
 
     private ServiceCaller serviceCaller;
 
-    private static UserDTO user;
+    public static UserDTO user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

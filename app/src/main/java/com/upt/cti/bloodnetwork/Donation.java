@@ -14,7 +14,7 @@ import com.upt.cti.bloodnetwork.persistence.domain.dto.DonationDTO;
 import com.upt.cti.bloodnetwork.serviceHandlers.ServiceCaller;
 
 import java.text.ParseException;
-import java.sql.Date;
+import java.util.Date;
 
 public class Donation extends AppCompatActivity {
 
@@ -38,14 +38,15 @@ public class Donation extends AppCompatActivity {
                 DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
                 Date startDate = null;
                 try {
-                    startDate = (Date)formatter.parse(date);
-                    donation.setDate(startDate);
+                    startDate = formatter.parse(date);
+                    donation.setDate(new java.sql.Date(startDate.getTime()));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
 
                 donation.setQuantity(new Long(amount));
                 donation.setPlaceId(new Long(place));
+                donation.setUserId(SignIn.user.getEmail());
 
                 serviceCaller.callPostService(serviceCaller.host+"donation/create",donation);
 

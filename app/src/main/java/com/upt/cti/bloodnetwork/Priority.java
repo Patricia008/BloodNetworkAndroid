@@ -18,6 +18,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
@@ -34,6 +35,7 @@ public class Priority extends AppCompatActivity {
     private Handler handler;
     private Runnable runnable;
     private ServiceCaller serviceCaller;
+    public static List<PriorityItem> centers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +59,7 @@ public class Priority extends AppCompatActivity {
                     String url = serviceCaller.host+"bloodrequirement/find/"+bloodType;
                     Looper.prepare();
                     RestTemplate restTemplate = new RestTemplate();
-                    restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
-
+                    restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
                     ResponseEntity<List<BloodRequirementDTO>> rateResponse =
                             restTemplate.exchange(url,
                                     HttpMethod.GET, null, new ParameterizedTypeReference<List<BloodRequirementDTO>>() {
@@ -66,11 +67,8 @@ public class Priority extends AppCompatActivity {
                     List<BloodRequirementDTO> result = rateResponse.getBody();
 
                     if(result!=null){
-                        List<PriorityItem> centers = convertDTOToListItemPriority(result);
-                        ListView listCenters = (ListView) findViewById(R.id.listCenters);
+                        Priority.centers = convertDTOToListItemPriority(result);
 
-                        final PriorityAdapter adapter = new PriorityAdapter(that, R.layout.item_priority, centers);
-                        listCenters.setAdapter(adapter);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -78,6 +76,17 @@ public class Priority extends AppCompatActivity {
             }
         });
         thread.start();
+
+        ListView listCenters = (ListView) findViewById(R.id.listCenters);
+
+        try{
+            thread.join();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        final PriorityAdapter adapter = new PriorityAdapter(that, R.layout.item_priority, Priority.centers);
+        listCenters.setAdapter(adapter);
 
         initUI();
         countDownStart();
@@ -110,11 +119,7 @@ public class Priority extends AppCompatActivity {
             public void run() {
                 handler.postDelayed(this, 1000);
                 try {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat(
-                            "yyyy-MM-dd");
-                    // Here Set your Event Date
-                    Menu menu = new Menu();
-                    Date eventDate = dateFormat.parse(menu.eventDate);
+                    Date eventDate = Menu.eventDate;
                     Date currentDate = new Date();
                     if (!currentDate.after(eventDate)) {
                         long diff = eventDate.getTime()

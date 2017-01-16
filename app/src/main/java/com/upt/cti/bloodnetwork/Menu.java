@@ -9,13 +9,11 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.upt.cti.bloodnetwork.persistence.domain.dto.UserDTO;
 import com.upt.cti.bloodnetwork.serviceHandlers.ServiceCaller;
 
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Menu extends AppCompatActivity {
@@ -24,7 +22,7 @@ public class Menu extends AppCompatActivity {
     private LinearLayout linearLayout1, linearLayout2;
     private Handler handler;
     private Runnable runnable;
-    static public String eventDate="2017-01-9";
+    static public Date eventDate;
     private ServiceCaller serviceCaller;
 
     @Override
@@ -39,7 +37,7 @@ public class Menu extends AppCompatActivity {
         countDownStart();
     }
 
-    public String getNextDonationDate(){
+    public Date getNextDonationDate(){
         SignIn signIn = new SignIn();
         final String email = signIn.getUser().getEmail();
         Thread thread = new Thread(new Runnable() {
@@ -51,10 +49,9 @@ public class Menu extends AppCompatActivity {
                     Looper.prepare();
                     RestTemplate restTemplate = new RestTemplate();
                     restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
-                    String result = restTemplate.getForObject(url, String.class);
+                    Date result = restTemplate.getForObject(url, Date.class);
                     if(result != null){
-                        Menu menu = new Menu();
-                        menu.eventDate = result;
+                        Menu.eventDate = result;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -67,7 +64,7 @@ public class Menu extends AppCompatActivity {
         catch(InterruptedException e){
             e.printStackTrace();
         }
-        return this.eventDate;
+        return Menu.eventDate;
     }
 
     private void initUI() {
@@ -88,11 +85,7 @@ public class Menu extends AppCompatActivity {
             public void run() {
                 handler.postDelayed(this, 1000);
                 try {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat(
-                            "yyyy-MM-dd");
-                    // Here Set your Event Date
-                    Menu menu = new Menu();
-                    Date eventDate = dateFormat.parse(menu.eventDate);
+                    Date eventDate = Menu.eventDate;
                     Date currentDate = new Date();
                     if (!currentDate.after(eventDate)) {
                         long diff = eventDate.getTime()

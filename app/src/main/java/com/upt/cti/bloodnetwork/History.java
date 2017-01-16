@@ -21,6 +21,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
@@ -36,6 +37,7 @@ public class History extends AppCompatActivity {
     private Handler handler;
     private Runnable runnable;
     private ServiceCaller serviceCaller;
+    private static List<HistoryItem> histories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +61,7 @@ public class History extends AppCompatActivity {
                     String url = serviceCaller.host+"donation/find/"+email;
                     Looper.prepare();
                     RestTemplate restTemplate = new RestTemplate();
-                    restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+                    restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
                     ResponseEntity<List<DonationDTO>> rateResponse =
                             restTemplate.exchange(url,
@@ -68,11 +70,7 @@ public class History extends AppCompatActivity {
                     List<DonationDTO> result = rateResponse.getBody();
 
                     if(result!=null){
-                        List<HistoryItem> histories = convertDTOToListItemHistory(result);
-                        ListView listHistories = (ListView) findViewById(R.id.listHistory);
-
-                        final HistoryAdapter adapter = new HistoryAdapter(that, R.layout.item_history, histories);
-                        listHistories.setAdapter(adapter);
+                        History.histories = convertDTOToListItemHistory(result);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -80,7 +78,17 @@ public class History extends AppCompatActivity {
             }
         });
         thread.start();
+        try{
+            thread.join();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
 
+        ListView listHistories = (ListView) findViewById(R.id.listHistory);
+
+        final HistoryAdapter adapter = new HistoryAdapter(that, R.layout.item_history, History.histories);
+        listHistories.setAdapter(adapter);
         initUI();
         countDownStart();
 
@@ -115,11 +123,7 @@ public class History extends AppCompatActivity {
             public void run() {
                 handler.postDelayed(this, 1000);
                 try {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat(
-                            "yyyy-MM-dd");
-                    // Here Set your Event Date
-                    Menu menu = new Menu();
-                    Date eventDate = dateFormat.parse(menu.eventDate);
+                    Date eventDate = Menu.eventDate;
                     Date currentDate = new Date();
                     if (!currentDate.after(eventDate)) {
                         long diff = eventDate.getTime()

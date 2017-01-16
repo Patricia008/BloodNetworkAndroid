@@ -3,6 +3,7 @@ package com.upt.cti.bloodnetwork.serviceHandlers;
 import android.os.Looper;
 
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -11,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 public class ServiceCaller {
 
-    public String host = "localhost:8080/bloodnetwork/api/";
+    public String host = "http://192.168.2.32:8080/bloodnetwork/api/";
 
     public void callPostService(final String url, final Object entity){
         Thread thread = new Thread(new Runnable() {
@@ -21,7 +22,7 @@ public class ServiceCaller {
                 try  {
                     Looper.prepare();
                     RestTemplate restTemplate = new RestTemplate();
-                    //restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+                    restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
                     String result = restTemplate.postForObject(url, entity, String.class);
 
                 } catch (Exception e) {
@@ -29,8 +30,8 @@ public class ServiceCaller {
                 }
             }
         });
-
         thread.start();
     }
+
 
 }
